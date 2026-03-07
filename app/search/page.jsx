@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
@@ -13,7 +13,7 @@ import { mockImages } from "@/lib/mockImages";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function SearchResultsPage() {
+function SearchResultsInner() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
     const [isLoading, setIsLoading] = useState(true);
@@ -207,5 +207,17 @@ export default function SearchResultsPage() {
 
             <Footer />
         </main>
+    );
+}
+
+export default function SearchResultsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+                <Loader2 className="animate-spin text-primary" size={64} strokeWidth={1.5} />
+            </div>
+        }>
+            <SearchResultsInner />
+        </Suspense>
     );
 }
