@@ -5,10 +5,8 @@ import { blogPosts } from "@/lib/data";
 import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
 import { PageHeroCompact } from "@/components/ui/PageHeroCompact";
-import { Section } from "@/components/ui/Section";
 import { mockImages } from "@/lib/mockImages";
-import { PillButton } from "@/components/ui/PillButton";
-import { Calendar, Clock, ArrowRight, Search, Tag } from "lucide-react";
+import { Calendar, Clock, ArrowRight, ArrowUpRight, Search, Mail } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -28,28 +26,30 @@ export default function BlogPage() {
     return (
         <main className="bg-brand-bg min-h-screen">
             <HeaderNav />
+
             <PageHeroCompact
                 title="Clinical Insights"
-                subtitle="The latest medical research, health updates, and clinic news from the Medify expert team."
-                breadcrumb="Home / Blog"
+                subtitle="Explore our latest medical articles, health advice, and clinical updates written by our expert team of doctors."
+                breadcrumb="Home / Clinical Insights"
                 bgImage={mockImages.pageHeroes.blog}
             />
 
-            <Section className="pb-16 lg:pb-12">
+            <section className="section-pad pb-16 lg:pb-24">
                 <div className="container-custom">
 
                     {/* ── Filters & Search ── */}
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16">
-                        <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
+                        {/* Tabs */}
+                        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                             {categories.map(cat => (
                                 <button
                                     key={cat}
                                     onClick={() => setActiveTab(cat)}
                                     className={cn(
-                                        "px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest transition-all",
+                                        "px-4 py-2 rounded-full text-[13px] font-semibold transition-all duration-200 border",
                                         activeTab === cat
-                                            ? "bg-primary text-white shadow-xl shadow-primary/20 scale-105"
-                                            : "bg-white border border-gray-lighter text-gray-muted hover:border-primary/40 hover:text-primary shadow-soft"
+                                            ? "bg-primary text-white border-primary shadow-sm"
+                                            : "bg-white text-gray-medium border-gray-lighter hover:border-primary/30 hover:text-primary shadow-sm"
                                     )}
                                 >
                                     {cat}
@@ -57,105 +57,118 @@ export default function BlogPage() {
                             ))}
                         </div>
 
-                        <div className="relative w-full lg:w-96 group">
-                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-primary" size={18} />
+                        {/* Search Input */}
+                        <div className="relative w-full lg:w-[320px] shrink-0 object-right">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-light" size={16} />
                             <input
                                 type="text"
                                 placeholder="Search articles..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-14 pr-6 py-3 rounded-full bg-white border border-gray-lighter focus:border-primary focus:outline-none focus:ring-8 focus:ring-primary/5 font-bold text-sm text-gray-darkest transition-all shadow-soft"
+                                className="w-full pl-11 pr-4 py-2.5 rounded-[12px] bg-white border border-gray-lighter focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 text-[14px] text-gray-darkest transition-all shadow-sm placeholder:text-gray-light"
                             />
                         </div>
                     </div>
 
                     {/* ── Post Grid ── */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-                        {filteredPosts.map((post, i) => (
-                            <Link
-                                key={post.id}
-                                href={`/blog/${post.slug}`}
-                                className="group bg-white rounded-[40px] border border-gray-lighter overflow-hidden shadow-soft hover:shadow-2xl hover:border-primary/20 transition-all flex flex-col"
-                            >
-                                <div className="relative aspect-[16/10] overflow-hidden">
-                                    <img
-                                        src={post.image}
-                                        alt={post.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-4 py-1.5 rounded-full bg-primary/95 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest shadow-lg">
-                                            {post.category}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="p-6 flex flex-col flex-1 space-y-4">
-                                    <div className="flex items-center gap-4 text-[10px] font-black text-gray-muted uppercase tracking-widest">
-                                        <span className="flex items-center gap-1.5"><Calendar size={12} className="text-primary" /> {post.date}</span>
-                                        <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> {post.readTime}</span>
-                                    </div>
-                                    <h3 className="text-2xl font-black text-gray-darkest tracking-tight leading-[1.1] group-hover:text-primary transition-colors">
-                                        {post.title}
-                                    </h3>
-                                    <p className="text-sm font-medium text-gray-dark leading-relaxed line-clamp-2">
-                                        {post.excerpt}
-                                    </p>
-                                    <div className="pt-4 mt-auto">
-                                        <div className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest group-hover:translate-x-2 transition-transform">
-                                            Read Article <ArrowRight size={14} strokeWidth={3} />
+                    {filteredPosts.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-16">
+                            {filteredPosts.map((post) => (
+                                <Link
+                                    key={post.id}
+                                    href={`/blog/${post.slug}`}
+                                    className="group card !p-0 overflow-hidden hover:shadow-hover hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                                >
+                                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-lighter">
+                                        <img
+                                            src={post.image}
+                                            alt={post.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                        <div className="absolute top-4 left-4">
+                                            <span className="px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-[11px] font-semibold text-primary shadow-sm">
+                                                {post.category}
+                                            </span>
                                         </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
 
-                    {filteredPosts.length === 0 && (
-                        <div className="py-32 text-center space-y-6">
-                            <div className="w-20 h-20 rounded-full bg-brand-surface flex items-center justify-center text-primary mx-auto">
-                                <Search size={32} />
+                                    <div className="p-5 flex flex-col flex-1 gap-3 space-y-0 text-left">
+                                        <div className="flex items-center gap-2 text-[11.5px] text-gray-muted">
+                                            <span className="flex items-center gap-1.5"><Calendar size={13} /> {post.date}</span>
+                                            <span className="w-1 h-1 rounded-full bg-gray-lighter" />
+                                            <span className="flex items-center gap-1.5"><Clock size={13} /> {post.readTime}</span>
+                                        </div>
+                                        <h4 className="text-gray-darkest leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                                            {post.title}
+                                        </h4>
+                                        <p className="text-[13.5px] text-gray-muted leading-[1.65] line-clamp-2 flex-1">
+                                            {post.excerpt}
+                                        </p>
+                                        <div className="flex items-center justify-between pt-3 border-t border-gray-lighter mt-auto">
+                                            <span className="text-[12.5px] font-semibold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                                                Read Article <ArrowUpRight size={13} strokeWidth={2.5} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                        /* Empty State */
+                        <div className="py-20 text-center space-y-4 bg-white rounded-[24px] border border-gray-lighter shadow-sm">
+                            <div className="w-16 h-16 rounded-full bg-brand-bg flex items-center justify-center text-primary mx-auto mb-2">
+                                <Search size={24} />
                             </div>
-                            <h3 className="text-3xl font-black text-gray-darkest tracking-tight">No articles found</h3>
-                            <p className="text-lg font-medium text-gray-dark max-w-md mx-auto">
-                                We couldn't find any articles matching your search query. Try adjusting your filters or keywords.
+                            <h3 className="text-gray-darkest">No articles found</h3>
+                            <p className="text-[15px] text-gray-muted max-w-sm mx-auto">
+                                We couldn't find any articles matching your search query. Try adjusting your filters.
                             </p>
-                            <PillButton onClick={() => { setSearch(""); setActiveTab("All Posts"); }} className="px-10">Clear all filters</PillButton>
+                            <button
+                                onClick={() => { setSearch(""); setActiveTab("All Posts"); }}
+                                className="btn-secondary text-[13px] !px-5 !py-2.5 mt-4"
+                            >
+                                Clear all filters
+                            </button>
                         </div>
                     )}
 
                 </div>
-            </Section>
+            </section>
 
             {/* ── Newsletter Section ── */}
-            <Section className="py-16 bg-gray-darkest overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 -skew-x-12 translate-x-1/4" />
-                <div className="container-custom relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div className="space-y-8">
-                        <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary shadow-2xl backdrop-blur-xl border border-white/10">
-                            <Tag size={28} />
+            <section className="section-pad bg-gray-darkest text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -mr-[250px] -mt-[250px]" />
+
+                <div className="container-custom relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="space-y-5 max-w-lg">
+                        <div className="w-12 h-12 rounded-[14px] bg-white/10 flex items-center justify-center text-white mb-2">
+                            <Mail size={22} strokeWidth={2} />
                         </div>
-                        <h2 className="text-4xl lg:text-6xl font-black text-white tracking-tight leading-[0.95]">
-                            Get the clinical<br />
-                            edge in your inbox.
-                        </h2>
-                        <p className="text-xl font-medium text-white/50 leading-relaxed max-w-xl">
-                            Join 5,000+ medical professionals and patients receiving our weekly digest on HealthTech and clinical best practices.
+                        <h2 className="text-white">Stay informed on your health</h2>
+                        <p className="text-[16px] text-white/70 leading-[1.7]">
+                            Subscribe to receive the latest health tips, clinical updates, and evidence-based wellness guidance directly in your inbox.
                         </p>
                     </div>
-                    <form className="flex flex-col sm:flex-row gap-4 p-2 bg-white/5 rounded-[40px] border border-white/10 backdrop-blur-md">
-                        <input
-                            required
-                            type="email"
-                            placeholder="Enter your email"
-                            className="flex-1 bg-transparent px-8 py-5 text-white focus:outline-none font-bold placeholder:text-white/30"
-                        />
-                        <button className="px-10 py-5 bg-white text-gray-darkest rounded-full text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl shadow-black/20">
-                            Subscribe Now
-                        </button>
-                    </form>
+
+                    <div className="card bg-white/5 border border-white/10 backdrop-blur-md p-6 lg:p-8 rounded-[24px]">
+                        <h4 className="text-white mb-6">Join our newsletter</h4>
+                        <form className="flex flex-col sm:flex-row gap-3">
+                            <input
+                                required
+                                type="email"
+                                placeholder="Email address"
+                                className="flex-1 bg-white px-5 py-3.5 rounded-[12px] text-[14px] text-gray-darkest focus:outline-none focus:ring-4 focus:ring-primary/20 placeholder:text-gray-light font-medium"
+                            />
+                            <button className="btn-primary shrink-0 !min-h-[48px] !px-8 text-[14px]">
+                                Subscribe
+                            </button>
+                        </form>
+                        <p className="text-[12px] text-white/40 mt-4 text-center sm:text-left">
+                            We respect your privacy. No spam, just valuable insights.
+                        </p>
+                    </div>
                 </div>
-            </Section>
+            </section>
 
             <Footer />
         </main>

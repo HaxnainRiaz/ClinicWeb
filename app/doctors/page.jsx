@@ -4,10 +4,8 @@ import { useState, useMemo } from "react";
 import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
 import { PageHeroCompact } from "@/components/ui/PageHeroCompact";
-import { Section, Card } from "@/components/ui/Section";
-import { PillButton } from "@/components/ui/PillButton";
-import { Search, Filter, Plus, MessageCircle, ArrowUpRight } from "lucide-react";
-import { doctors, specialties } from "@/lib/data";
+import { Search, MapPin, CheckCircle2, Star, ArrowUpRight } from "lucide-react";
+import { doctors, specialties, insuranceProviders } from "@/lib/data";
 import { mockImages } from "@/lib/mockImages";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -15,151 +13,198 @@ import { cn } from "@/lib/utils";
 export default function DoctorsPage() {
     const [search, setSearch] = useState("");
     const [selectedSpecialty, setSelectedSpecialty] = useState("All");
+    const [selectedInsurance, setSelectedInsurance] = useState("All");
+    const [selectedLocation, setSelectedLocation] = useState("All");
+
+    // Mock locations for the filter
+    const locations = ["Main Clinic", "Downtown Center", "Westside Hospital"];
 
     const filteredDoctors = useMemo(() => {
         return doctors.filter(doc => {
             const matchesSearch = doc.name.toLowerCase().includes(search.toLowerCase()) ||
                 doc.specialty.toLowerCase().includes(search.toLowerCase());
             const matchesSpecialty = selectedSpecialty === "All" || doc.specialty === selectedSpecialty;
-            return matchesSearch && matchesSpecialty;
+            const matchesInsurance = selectedInsurance === "All" || (doc.insurances && doc.insurances.includes(selectedInsurance));
+            // Assuming all doctors are at all locations for this mock
+            const matchesLocation = selectedLocation === "All" || true;
+
+            return matchesSearch && matchesSpecialty && matchesInsurance && matchesLocation;
         });
-    }, [search, selectedSpecialty]);
+    }, [search, selectedSpecialty, selectedInsurance, selectedLocation]);
 
     return (
-        <main className="bg-brand-bg min-h-screen">
+        <main className="bg-brand-bg min-h-screen pt-[76px]">
             <HeaderNav />
+
             <PageHeroCompact
                 title="Our Medical Specialists"
-                subtitle="Meet our diverse team of certified doctors covering all medical branches."
+                subtitle="Find and book appointments with our experienced, board-certified doctors."
                 breadcrumb="Home / Doctors"
                 bgImage={mockImages.pageHeroes.doctors}
             />
 
-            <Section className="pb-16 lg:pb-12">
+            <section className="section-pad pb-16 lg:pb-24">
+                <div className="container-custom">
 
-                {/* ── Interactive Filter Bar ── */}
-                <div className="bg-white p-6 rounded-[40px] shadow-soft border border-gray-lighter mb-16 space-y-8 animate-in slide-in-from-top duration-700">
-                    <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
-                        <div className="relative w-full lg:max-w-xl group">
-                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-gray-muted group-focus-within:text-primary transition-colors" size={20} />
-                            <input
-                                type="text"
-                                placeholder="Search by name or specialty..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-16 pr-8 py-4 rounded-pill bg-gray-lightest border-none focus:outline-none focus:ring-4 focus:ring-primary/5 font-black text-sm text-gray-darkest placeholder:text-gray-light tracking-tight transition-all"
-                            />
-                        </div>
+                    {/* ── Interactive Filter Bar ── */}
+                    <div className="bg-white p-5 md:p-6 rounded-[24px] shadow-sm border border-gray-lighter mb-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Search */}
+                            <div className="relative w-full">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-light" size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="Search by name..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="w-full h-[52px] pl-11 pr-4 rounded-[14px] bg-gray-lightest border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 text-[14px] text-gray-darkest transition-all placeholder:text-gray-light"
+                                />
+                            </div>
 
-                        <div className="flex items-center gap-4 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-                            {["All", ...specialties.slice(0, 5)].map(spec => (
-                                <button
-                                    key={spec}
-                                    onClick={() => setSelectedSpecialty(spec)}
-                                    className={cn(
-                                        "px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
-                                        selectedSpecialty === spec
-                                            ? "bg-primary text-white shadow-xl shadow-primary/20 scale-105"
-                                            : "bg-gray-lightest text-gray-dark hover:bg-gray-lighter"
-                                    )}
+                            {/* Specialty Filter */}
+                            <div className="relative w-full">
+                                <select
+                                    value={selectedSpecialty}
+                                    onChange={(e) => setSelectedSpecialty(e.target.value)}
+                                    className="w-full h-[52px] px-4 rounded-[14px] bg-gray-lightest border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 text-[14px] text-gray-darkest transition-all appearance-none cursor-pointer"
+                                    aria-label="Filter by Specialty"
                                 >
-                                    {spec}
-                                </button>
-                            ))}
+                                    <option value="All">All Specialties</option>
+                                    {specialties.map(spec => (
+                                        <option key={spec} value={spec}>{spec}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-light">
+                                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Location Filter */}
+                            <div className="relative w-full">
+                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-light" size={18} />
+                                <select
+                                    value={selectedLocation}
+                                    onChange={(e) => setSelectedLocation(e.target.value)}
+                                    className="w-full h-[52px] pl-11 pr-4 rounded-[14px] bg-gray-lightest border border-transparent focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 text-[14px] text-gray-darkest transition-all appearance-none cursor-pointer"
+                                    aria-label="Filter by Location"
+                                >
+                                    <option value="All">All Locations</option>
+                                    {locations.map(loc => (
+                                        <option key={loc} value={loc}>{loc}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-light">
+                                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Insurance Filter */}
+                            <div className="relative w-full">
+                                <select
+                                    value={selectedInsurance}
+                                    onChange={(e) => setSelectedInsurance(e.target.value)}
+                                    className="w-full h-[52px] px-4 rounded-[14px] bg-primary/5 border border-primary/20 focus:bg-white focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 text-[14px] font-medium text-primary-dark transition-all appearance-none cursor-pointer"
+                                    aria-label="Filter by Insurance"
+                                >
+                                    <option value="All">All Insurances Accepted</option>
+                                    {insuranceProviders.map(provider => (
+                                        <option key={provider} value={provider}>{provider}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary">
+                                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* ── Results Grid ── */}
-                {filteredDoctors.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {filteredDoctors.map((doc, i) => (
-                            <Link href={`/doctors/${doc.slug}`} key={i} className="group">
-                                <Card noPadding className="overflow-hidden border-4 border-transparent hover:border-primary/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-[40px] bg-white h-full flex flex-col">
-                                    <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+                    {/* ── Results Grid ── */}
+                    {filteredDoctors.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredDoctors.map((doc, i) => (
+                                <Link href={`/doctors/${doc.slug}`} key={i} className="group flex flex-col h-full bg-white rounded-[20px] shadow-sm hover:shadow-hover border border-gray-lighter hover:border-primary/20 transition-all duration-300 overflow-hidden">
+                                    {/* Doctor Image */}
+                                    <div className="relative aspect-[4/5] overflow-hidden bg-gray-50">
                                         <img
                                             src={doc.image}
                                             alt={doc.name}
-                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         />
 
-                                        {/* Status Badge */}
-                                        <div className="absolute top-6 left-6 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black text-primary uppercase tracking-widest border border-white/50 shadow-sm flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                                            Available Today
-                                        </div>
-
-                                        {/* Hover Overlay */}
-                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                                            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-primary shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-500">
-                                                <Plus size={24} strokeWidth={3} />
-                                            </div>
+                                        {/* Rating badge */}
+                                        <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-sm">
+                                            <Star size={11} className="fill-amber-400 text-amber-400" />
+                                            <span className="text-[11px] font-bold text-gray-darkest">{doc.rating}</span>
                                         </div>
                                     </div>
 
-                                    <div className="p-6 space-y-4 flex-1 flex flex-col">
-                                        <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{doc.specialty}</p>
-                                            <h4 className="text-2xl font-black text-gray-darkest tracking-tight leading-none group-hover:text-primary transition-colors">{doc.name}</h4>
-                                        </div>
+                                    {/* Doctor Info */}
+                                    <div className="p-5 flex flex-col flex-1">
+                                        <div className="flex-1">
+                                            <p className="text-[11.5px] font-semibold text-primary uppercase tracking-wide mb-1">{doc.specialty}</p>
+                                            <h4 className="text-[18px] font-bold text-gray-darkest group-hover:text-primary transition-colors leading-snug mb-1.5">{doc.name}</h4>
 
-                                        <div className="flex items-center justify-between pt-4 border-t border-gray-lighter mt-auto">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-brand-bg flex items-center justify-center text-primary">
-                                                    <Plus size={14} />
+                                            <div className="flex items-center gap-2 text-[13px] text-gray-muted mb-4">
+                                                <MapPin size={13} /> Main Clinic • {doc.experience}
+                                            </div>
+
+                                            {/* Insurance Badges */}
+                                            {doc.insurances && doc.insurances.length > 0 && (
+                                                <div className="mb-5">
+                                                    <p className="text-[11px] font-semibold text-gray-light uppercase tracking-wide mb-2">Accepted Insurance</p>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {doc.insurances.slice(0, 2).map((ins, idx) => (
+                                                            <span key={idx} className="px-2.5 py-1 rounded-[6px] bg-green-50 text-green-700 text-[11px] font-medium border border-green-100 flex items-center gap-1">
+                                                                <CheckCircle2 size={10} /> {ins}
+                                                            </span>
+                                                        ))}
+                                                        {doc.insurances.length > 2 && (
+                                                            <span className="px-2 py-1 rounded-[6px] bg-gray-lightest text-gray-medium text-[11px] font-medium border border-gray-lighter">
+                                                                +{doc.insurances.length - 2} more
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <span className="text-[11px] font-black text-gray-darkest uppercase tracking-widest">Book Now</span>
+                                            )}
+                                        </div>
+
+                                        {/* Action Button */}
+                                        <div className="pt-4 border-t border-gray-lighter mt-auto">
+                                            <div className="w-full h-[44px] flex items-center justify-center gap-2 rounded-[12px] bg-brand-bg text-[13.5px] font-semibold text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                                Book Appointment <ArrowUpRight size={15} strokeWidth={2.5} />
                                             </div>
-                                            <ArrowUpRight size={20} className="text-gray-light group-hover:text-primary transition-colors" />
                                         </div>
                                     </div>
-                                </Card>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="py-32 text-center space-y-8 animate-in zoom-in duration-500">
-                        <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center text-gray-300 mx-auto">
-                            <Search size={48} />
+                                </Link>
+                            ))}
                         </div>
-                        <div className="space-y-4">
-                            <h3 className="text-3xl font-black text-gray-darkest tracking-tight">No specialists found</h3>
-                            <p className="text-lg font-medium text-gray-dark">Try adjusting your filters or search keywords.</p>
-                            <PillButton onClick={() => { setSearch(""); setSelectedSpecialty("All") }} variant="outline" className="px-10 h-16 uppercase tracking-widest text-[11px]">Clear All Filters</PillButton>
-                        </div>
-                    </div>
-                )}
-            </Section>
-
-            {/* ── Help CTA ── */}
-            <Section className="pb-16 pt-8">
-                <div className="bg-gray-darkest p-6 lg:p-10 rounded-[60px] text-white overflow-hidden relative shadow-3xl">
-                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/20 to-transparent pointer-events-none" />
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-                        <div className="space-y-8">
-                            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-[0.2em] border border-white/5">
-                                24/7 Support Desk <div className="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,1)]" />
+                    ) : (
+                        /* Empty State */
+                        <div className="py-24 text-center space-y-4 bg-white rounded-[24px] border border-gray-lighter shadow-sm">
+                            <div className="w-16 h-16 rounded-full bg-brand-bg flex items-center justify-center text-primary mx-auto mb-2">
+                                <Search size={24} />
                             </div>
-                            <h2 className="font-black tracking-tight leading-[1.1]">Can't find the right specialist?</h2>
-                            <p className="text-xl font-medium text-white/70 leading-relaxed max-w-xl">
-                                Our medical concierge team is available to help you find the perfect doctor for your specific symptoms and medical needs.
+                            <h3 className="text-gray-darkest">No specialists found</h3>
+                            <p className="text-[15px] text-gray-muted max-w-sm mx-auto">
+                                We couldn't find any doctors matching your selected filters. Try broadening your search.
                             </p>
+                            <button
+                                onClick={() => { setSearch(""); setSelectedSpecialty("All"); setSelectedInsurance("All"); setSelectedLocation("All"); }}
+                                className="btn-secondary text-[13px] !px-5 !py-2.5 mt-4"
+                            >
+                                Clear all filters
+                            </button>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-6 lg:justify-end">
-                            <Link href="/contact">
-                                <PillButton className="px-8 py-3 bg-primary text-white hover:bg-white hover:text-primary shadow-xl shadow-primary/20 text-xs font-black uppercase tracking-widest flex items-center gap-3 group">
-                                    <MessageCircle size={20} className="group-hover:rotate-12 transition-transform" /> Live Consultancy
-                                </PillButton>
-                            </Link>
-                            <Link href="/appointments">
-                                <PillButton variant="outline" className="px-8 py-3 border-2 border-white/20 text-white hover:bg-white/10 text-xs font-black uppercase tracking-widest">
-                                    Quick Booking
-                                </PillButton>
-                            </Link>
-                        </div>
-                    </div>
+                    )}
+
                 </div>
-            </Section>
+            </section>
 
             <Footer />
         </main>

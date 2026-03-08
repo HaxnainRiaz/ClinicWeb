@@ -3,11 +3,130 @@
 import { useState } from "react";
 import Link from "next/link";
 import { mockImages } from "@/lib/mockImages";
-import { Play, ArrowUpRight, Search, Plus, ExternalLink, Activity, CheckCircle2, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { doctors } from "@/lib/data";
-import { Section, Card } from "../ui/Section";
+import { services } from "@/lib/data";
+import {
+    ArrowRight, ArrowUpRight, CheckCircle2, Loader2,
+    Activity, Heart, Brain, Eye, Bone, Smile, Baby, Stethoscope,
+    Star, Calendar
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
+// ── Services / Specialties Section ─────────────────────────────────────────
+const SERVICE_CARDS = [
+    { icon: Heart, title: "Cardiology", desc: "Comprehensive heart care, including diagnostics, monitoring, and treatment of cardiovascular conditions.", href: "/services/cardiac-screening", color: "text-red-500", bg: "bg-red-50" },
+    { icon: Brain, title: "Neurology", desc: "Specialized care for brain, spine, and nervous system disorders with advanced diagnostic support.", href: "/services/general-consultation", color: "text-violet-500", bg: "bg-violet-50" },
+    { icon: Baby, title: "Pediatrics", desc: "Compassionate, evidence-based healthcare for infants, children, and adolescents.", href: "/services/general-consultation", color: "text-blue-500", bg: "bg-blue-50" },
+    { icon: Bone, title: "Orthopedics", desc: "Expert care for musculoskeletal conditions, sports injuries, and joint health.", href: "/services/general-consultation", color: "text-amber-600", bg: "bg-amber-50" },
+    { icon: Smile, title: "Dentistry", desc: "Full-service dental care — from preventive cleanings to advanced restorative procedures.", href: "/services/dental-surgery", color: "text-teal-500", bg: "bg-teal-50" },
+    { icon: Eye, title: "Ophthalmology", desc: "Vision care and treatment for eye conditions by experienced ophthalmologists.", href: "/services/general-consultation", color: "text-cyan-500", bg: "bg-cyan-50" },
+];
+
+export function ServicesGrid() {
+    return (
+        <section className="section-pad bg-brand-bg">
+            <div className="container-custom">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div className="space-y-4 max-w-lg">
+                        <div className="section-eyebrow">
+                            <Stethoscope size={12} strokeWidth={2.5} />
+                            Our Specialties
+                        </div>
+                        <h2 className="text-gray-darkest">Trusted care across specialties</h2>
+                        <p className="text-[16px] text-gray-muted leading-[1.7]">
+                            Access expert care across a full range of medical specialties — all under one roof.
+                        </p>
+                    </div>
+                    <Link href="/services" className="btn-secondary text-[14px] !px-5 !py-2.5 !min-h-[44px] !rounded-[12px] shrink-0">
+                        View All Specialties <ArrowRight size={15} strokeWidth={2} />
+                    </Link>
+                </div>
+
+                {/* Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                    {SERVICE_CARDS.map(({ icon: Icon, title, desc, href, color, bg }, i) => (
+                        <Link
+                            href={href}
+                            key={i}
+                            className="group card p-6 hover:shadow-hover hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4"
+                        >
+                            <div className={cn("w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0", bg)}>
+                                <Icon size={20} className={color} strokeWidth={2} />
+                            </div>
+                            <div>
+                                <h4 className="text-gray-darkest mb-2 group-hover:text-primary transition-colors">{title}</h4>
+                                <p className="text-[14px] text-gray-muted leading-[1.65]">{desc}</p>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-primary mt-auto pt-2">
+                                Learn More <ArrowUpRight size={13} strokeWidth={2.5} />
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ── Doctors Preview Section ─────────────────────────────────────────────────
+export function DoctorsPreview() {
+    return (
+        <section className="section-pad bg-white">
+            <div className="container-custom">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div className="space-y-4 max-w-lg">
+                        <div className="section-eyebrow">
+                            <Activity size={12} strokeWidth={2.5} />
+                            Our Doctors
+                        </div>
+                        <h2 className="text-gray-darkest">Meet our experienced specialists</h2>
+                        <p className="text-[16px] text-gray-muted leading-[1.7]">
+                            Our team helps you connect with the right specialist — board-certified, highly experienced, and patient-first.
+                        </p>
+                    </div>
+                    <Link href="/doctors" className="btn-secondary text-[14px] !px-5 !py-2.5 !min-h-[44px] !rounded-[12px] shrink-0">
+                        Meet Our Doctors <ArrowRight size={15} strokeWidth={2} />
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                    {doctors.map((doc, i) => (
+                        <Link href={`/doctors/${doc.slug}`} key={i} className="group card !p-0 overflow-hidden hover:shadow-hover hover:-translate-y-1 transition-all duration-300">
+                            {/* Image */}
+                            <div className="relative aspect-[4/5] overflow-hidden rounded-t-[18px]">
+                                <img
+                                    src={doc.image}
+                                    alt={doc.name}
+                                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-darkest/30 to-transparent" />
+                                {/* Rating badge */}
+                                <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-sm">
+                                    <Star size={11} className="fill-amber-400 text-amber-400" />
+                                    <span className="text-[11px] font-semibold text-gray-darkest">{doc.rating}</span>
+                                </div>
+                            </div>
+                            {/* Info */}
+                            <div className="p-5">
+                                <h5 className="text-gray-darkest mb-0.5">{doc.name}</h5>
+                                <p className="text-[12px] font-medium text-primary uppercase tracking-wide mb-3">{doc.specialty}</p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[12px] text-gray-muted">{doc.experience} exp.</span>
+                                    <div className="flex items-center gap-1 text-[11px] font-semibold text-primary group-hover:gap-2 transition-all">
+                                        Book <ArrowUpRight size={12} strokeWidth={2.5} />
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ── Newsletter / Support Section ─────────────────────────────────────────────
 export function MainSections() {
     const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -23,168 +142,186 @@ export function MainSections() {
     };
 
     return (
-        <section className="bg-brand-bg py-8 relative">
-            <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <section className="section-pad bg-brand-bg">
+            <div className="container-custom">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
 
-                {/* Left Column (Team & Newsletter) */}
-                <div className="flex flex-col gap-8 h-full">
-
-                    {/* Team Mini Card */}
-                    <Link href="/doctors" className="group bg-white rounded-3xl p-6 shadow-soft flex-1 flex flex-col justify-between border border-white hover:border-primary transition-all">
+                    {/* Left: Team Card */}
+                    <Link href="/doctors" className="group card flex flex-col justify-between hover:shadow-hover hover:border-primary/20 transition-all duration-300 min-h-[260px]">
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-surface text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-6 shadow-sm border border-brand-bg">
-                                Our Team <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                            <div className="section-eyebrow w-fit mb-5 text-[10px]">
+                                Our Team
                             </div>
-                            <h3 className="text-gray-darkest font-black leading-[1.15] mb-8 pr-10">
-                                Our team <span className="font-medium text-brand-muted">can help you get best consultant</span>
-                            </h3>
+                            <h3 className="text-gray-darkest mb-2 pr-8">Connect with the right specialist for your care</h3>
+                            <p className="text-[14px] text-gray-muted leading-[1.65] pr-6">
+                                Our team helps you connect with the right specialist, ensuring you receive expert, personalized care.
+                            </p>
                         </div>
-
-                        <div className="flex items-center justify-between mt-auto">
-                            <div className="flex -space-x-4">
+                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-lighter">
+                            <div className="flex -space-x-3">
                                 {[0, 1, 2, 3].map(i => (
-                                    <div key={i} className="w-14 h-14 rounded-full border-4 border-white overflow-hidden bg-gray-100 relative shadow-soft">
-                                        <img src={mockImages.doctors[i]} alt={`Doctor ${i}`} className="w-full h-full object-cover" />
+                                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-lightest shadow-sm">
+                                        <img src={mockImages.doctors[i]} alt={`Doctor ${i + 1}`} className="w-full h-full object-cover" />
                                     </div>
                                 ))}
                             </div>
-                            <div className="w-10 h-10 rounded-full border-2 border-gray-lighter flex items-center justify-center text-gray-dark group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
-                                <ArrowUpRight size={16} strokeWidth={2.5} />
+                            <div className="flex items-center gap-1.5 text-[13px] font-semibold text-primary group-hover:gap-2.5 transition-all">
+                                Meet Our Doctors <ArrowUpRight size={14} strokeWidth={2.5} />
                             </div>
                         </div>
                     </Link>
 
-                    {/* Newsletter Bonus Card */}
-                    <div className="bg-white rounded-3xl p-6 shadow-soft flex-1 flex flex-col justify-between border border-white">
+                    {/* Right: Newsletter Card */}
+                    <div className="card flex flex-col justify-between min-h-[260px]">
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-surface text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-6 shadow-sm border border-brand-bg">
-                                Get A Bonus <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                            <div className="section-eyebrow w-fit mb-5 text-[10px]">
+                                Stay Informed
                             </div>
-                            <h3 className="text-gray-darkest font-black leading-[1.15] mb-2 pr-10">
-                                Discover <span className="text-brand-muted font-medium">our latest medical heath news.</span>
-                            </h3>
+                            <h3 className="text-gray-darkest mb-2 pr-8">Discover the latest health news and clinical insights.</h3>
+                            <p className="text-[14px] text-gray-muted leading-[1.65]">
+                                Subscribe for expert health tips, clinic updates, and evidence-based wellness guidance.
+                            </p>
                         </div>
 
-                        <form onSubmit={handleSubscribe} className="mt-8 flex flex-col sm:flex-row bg-white p-1.5 rounded-full border shadow-soft w-full overflow-hidden relative">
+                        <form onSubmit={handleSubscribe} className="mt-6 flex items-center bg-gray-lightest rounded-[14px] p-1.5 gap-2">
                             <input
                                 required
                                 type="email"
-                                placeholder="Email"
-                                className="flex-1 px-4 py-2.5 bg-transparent text-gray-darkest focus:outline-none placeholder:text-gray-muted text-sm font-bold"
+                                placeholder="Your email address"
+                                aria-label="Email address"
+                                className="flex-1 px-4 py-2.5 bg-transparent text-[14px] font-medium text-gray-darkest focus:outline-none placeholder:text-gray-light min-w-0"
                             />
                             <button
+                                type="submit"
                                 disabled={submitting || success}
                                 className={cn(
-                                    "px-8 py-2.5 transition-all text-white rounded-full text-xs font-black shadow-md uppercase tracking-widest flex items-center justify-center gap-2",
-                                    success ? "bg-green-500 shadow-green-100/50" : "bg-[#4F84FF] hover:bg-primary-dark shadow-primary/30"
+                                    "flex items-center justify-center gap-2 px-5 py-2.5 rounded-[10px] text-[12.5px] font-semibold text-white transition-all shrink-0 min-h-[40px]",
+                                    success ? "bg-green-500" : "bg-primary hover:bg-primary-dark"
                                 )}
                             >
-                                {submitting ? <Loader2 size={16} className="animate-spin" /> : success ? <CheckCircle2 size={16} /> : "Subscribe"}
+                                {submitting
+                                    ? <Loader2 size={15} className="animate-spin" />
+                                    : success
+                                        ? <><CheckCircle2 size={15} /> Subscribed!</>
+                                        : "Subscribe"
+                                }
                             </button>
                         </form>
                     </div>
                 </div>
 
-                {/* Right Column (Media Feature) */}
-                <div className="relative h-full min-h-[400px] lg:min-h-full rounded-3xl overflow-hidden shadow-float group">
+                {/* Bottom: Feature Image */}
+                <div className="mt-6 relative rounded-[22px] overflow-hidden h-[260px] md:h-[320px] shadow-card group">
                     <img
                         src={mockImages.facility}
-                        alt="Medical innovation"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        alt="Medify clinic facility — modern and patient-friendly environment"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-blue-900/10 mix-blend-multiply" />
-
-                    {/* Top Right floating icon */}
-                    <Link href="/about" className="absolute top-8 right-8 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-float cursor-pointer hover:scale-110 transition-transform">
-                        <ArrowUpRight size={18} strokeWidth={3} />
-                    </Link>
-
-                    {/* Center Play Button */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <button className="w-20 h-20 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border border-white/50 shadow-float group transition-transform hover:scale-110">
-                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-sm">
-                                <Play size={18} fill="currentColor" className="ml-1" />
-                            </div>
-                        </button>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-darkest/60 to-transparent flex items-center">
+                        <div className="p-8 md:p-12 max-w-lg">
+                            <p className="text-[13px] font-semibold text-white/70 uppercase tracking-widest mb-2">Our Facility</p>
+                            <h3 className="text-white mb-4">A modern clinic built around your comfort and care.</h3>
+                            <Link href="/about" className="inline-flex items-center gap-2 text-[13px] font-semibold text-white hover:text-primary transition-colors">
+                                Learn About Us <ArrowRight size={14} strokeWidth={2.5} />
+                            </Link>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </section>
     );
 }
 
+// ── Specialties / Support Split Section ──────────────────────────────────────
 export function SupportSplit() {
     return (
-        <section className="bg-brand-bg py-8 relative overflow-hidden">
-            <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <section className="section-pad bg-white overflow-hidden">
+            <div className="container-custom">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-                {/* Left Side (Doctor portrait & Specialty cards) */}
-                <div className="relative">
-                    {/* Floating Innovation Pill */}
-                    <div className="absolute top-10 left-0 lg:-left-6 z-20 px-4 py-2 bg-brand-bg rounded-full shadow-float flex items-center gap-2 border border-white">
-                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white">
-                            <ExternalLink size={10} strokeWidth={3} />
+                    {/* Left: Image with cards */}
+                    <div className="relative order-2 lg:order-1">
+                        <div className="relative w-full aspect-[4/5] rounded-[22px] overflow-hidden shadow-card border border-gray-lighter/50">
+                            <img
+                                src={mockImages.doctors[0]}
+                                alt="Doctor providing specialist consultation"
+                                className="w-full h-full object-cover object-top"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-darkest/20 to-transparent" />
                         </div>
-                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] px-2">Team Up And Innovate</span>
+
+                        {/* Floating contact CTA */}
+                        <Link
+                            href="/contact"
+                            className="absolute bottom-6 -left-2 md:-left-6 z-20 bg-white rounded-full px-5 py-3 shadow-hover border border-gray-lighter flex items-center gap-2 hover:border-primary/30 transition-all text-[12.5px] font-semibold text-gray-darkest hover:text-primary"
+                        >
+                            Contact Us <ArrowUpRight size={13} strokeWidth={2.5} className="text-primary" />
+                        </Link>
+
+                        {/* Two specialty cards */}
+                        <div className="grid grid-cols-2 gap-4 mt-4">
+                            {[
+                                { title: "Digestive & GI Care", href: "/services/general-consultation" },
+                                { title: "Dermatology & Skin", href: "/services/general-consultation" },
+                            ].map((item, i) => (
+                                <Link
+                                    href={item.href}
+                                    key={i}
+                                    className="group card !p-5 hover:shadow-hover hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-300"
+                                >
+                                    <div className="w-8 h-8 rounded-[10px] bg-primary/8 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-all">
+                                        <Stethoscope size={16} strokeWidth={2} />
+                                    </div>
+                                    <h5 className="text-gray-darkest text-[13px] font-semibold leading-snug mb-3">{item.title}</h5>
+                                    <span className="text-[11px] font-semibold text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+                                        Learn More <ArrowRight size={10} strokeWidth={2.5} />
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden mb-6 bg-brand-surface shadow-float z-10">
-                        <img src={mockImages.doctors[0]} alt="Doctor smiling" className="w-full h-full object-cover object-top" />
-                    </div>
+                    {/* Right: Content */}
+                    <div className="space-y-7 order-1 lg:order-2">
+                        <div className="section-eyebrow">
+                            <Activity size={12} strokeWidth={2.5} />
+                            Specialist Care
+                        </div>
 
-                    {/* Contact Button floating */}
-                    <Link href="/contact" className="absolute bottom-16 -left-4 lg:-left-12 z-20 bg-white text-[10px] font-black text-gray-darkest uppercase tracking-widest px-6 py-3 rounded-full shadow-float border border-gray-lighter hover:border-primary flex items-center gap-2 transition-all">
-                        Contact With Us <div className="w-4 h-4 bg-brand-surface rounded-full flex items-center justify-center"><ArrowUpRight size={10} className="text-primary" /></div>
-                    </Link>
+                        <h2 className="text-gray-darkest">
+                            We are here to support your health at every stage of life.
+                        </h2>
 
-                    {/* 2 Small Cards row */}
-                    <div className="grid grid-cols-2 gap-4 relative z-20">
-                        {[
-                            { title: "Specialties in Digestive System", bg: "bg-white", href: "/services/general-consultation" },
-                            { title: "Treats Skin-Related Issues", bg: "bg-brand-surface", href: "/services/general-consultation" }
-                        ].map((item, i) => (
-                            <Link href={item.href} key={i} className={`p-4 rounded-2xl shadow-soft border border-white/50 group block transition-all hover:scale-105 active:scale-95 ${item.bg}`}>
-                                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary mb-4 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
-                                    <Plus size={16} strokeWidth={3} />
+                        <p className="text-[16px] text-gray-muted leading-[1.72]">
+                            Reach out to us with any questions or to schedule a visit. Our compassionate team is ready to help you find the right specialist and care path.
+                        </p>
+
+                        {/* Featured specialty card */}
+                        <div className="card flex flex-col sm:flex-row gap-5 sm:items-start border-l-4 border-l-primary !rounded-l-none">
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-8 h-8 rounded-[10px] bg-primary/10 flex items-center justify-center text-primary">
+                                        <Brain size={16} strokeWidth={2} />
+                                    </div>
+                                    <h5 className="text-gray-darkest font-semibold">Neurology</h5>
                                 </div>
-                                <h5 className="text-[13px] font-black tracking-tight text-gray-darkest mb-4 leading-snug">{item.title}</h5>
-                                <div className="text-[10px] uppercase font-bold text-gray-dark group-hover:text-primary tracking-widest border-b border-gray-light pb-0.5 w-max">Learn More</div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Right Side Info */}
-                <div className="space-y-10 lg:pl-10">
-                    <div className="inline-flex items-center gap-4">
-                        <div className="uppercase text-[9px] font-bold text-brand-muted tracking-[0.2em] leading-relaxed">
-                            Reach out to us with any questions or to schedule a visit
-                        </div>
-                    </div>
-
-                    <h2 className="text-gray-darkest leading-tight tracking-tight">
-                        We are here to support your health at every stage and look forward
-                    </h2>
-
-                    <div className="flex flex-col sm:flex-row bg-white rounded-[32px] p-4 shadow-soft gap-6 items-center border border-white group">
-                        <div className="flex-1 space-y-4 sm:pr-6 sm:border-r border-brand-surface w-full sm:w-auto">
-                            <div className="w-10 h-10 rounded-xl bg-brand-surface flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
-                                <Activity size={20} strokeWidth={2.5} />
+                                <p className="text-[13.5px] text-gray-muted leading-[1.6]">
+                                    Expert care for brain and nervous system disorders, including migraine, epilepsy, and cognitive health.
+                                </p>
+                                <Link href="/services" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-primary mt-3 hover:underline underline-offset-2">
+                                    View Specialties <ArrowRight size={12} strokeWidth={2.5} />
+                                </Link>
                             </div>
-                            <h4 className="text-[14px] font-black uppercase text-gray-darkest tracking-[0.1em]">Neurologist</h4>
-                            <Link href="/services" className="inline-flex px-4 py-1.5 border border-brand-surface rounded-full text-[9px] font-black text-gray-dark uppercase tracking-widest hover:bg-primary hover:text-white transition-all items-center gap-2">
-                                Learn More <Plus size={10} />
-                            </Link>
                         </div>
-                        <div className="flex-1 space-y-4">
-                            <p className="text-[10px] font-bold text-gray-dark uppercase tracking-widest leading-relaxed">
-                                Expert in treating disorders of the nervous system, including the brain and spinal cord
-                            </p>
-                            <div className="flex gap-2">
-                                <Link href="/doctors/dr-emily-white" className="w-8 h-8 rounded-full bg-gray-darkest text-white flex items-center justify-center shadow-sm hover:bg-primary transition-colors"><ArrowUpRight size={14} /></Link>
-                                <button className="w-8 h-8 rounded-full bg-white border border-gray-lighter text-gray-darkest flex items-center justify-center shadow-sm hover:bg-gray-50"><ArrowUpRight size={14} /></button>
-                            </div>
+
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Link href="/appointments" className="btn-primary text-[14px] !px-5 !py-2.5 !min-h-[44px] !rounded-[12px]">
+                                <Calendar size={15} strokeWidth={2} />
+                                Book Appointment
+                            </Link>
+                            <Link href="/contact" className="btn-secondary text-[14px] !px-5 !py-2.5 !min-h-[44px] !rounded-[12px]">
+                                Contact Us
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -193,51 +330,7 @@ export function SupportSplit() {
     );
 }
 
+// ── Team Preview (used on homepage via page.jsx if needed) ───────────────────
 export function TeamPreview() {
-    return (
-        <Section light className="relative">
-            <div className="container-custom">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12">
-                    <div className="space-y-6 max-w-xl text-center md:text-left">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-soft text-[10px] font-black text-primary uppercase tracking-[0.2em] border border-gray-lighter">
-                            Our Team <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        </div>
-                        <h2 className="text-gray-darkest leading-tight">Our team can help you get best consultant</h2>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <div className="flex -space-x-3">
-                            {[0, 1, 2, 3].map(i => (
-                                <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-gray-100 relative shadow-sm">
-                                    <img src={mockImages.doctors[i]} alt="Doctor" className="w-full h-full object-cover" />
-                                </div>
-                            ))}
-                        </div>
-                        <Link href="/doctors" className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary shadow-soft border border-gray-lighter cursor-pointer hover:bg-primary hover:text-white transition-all">
-                            <ArrowUpRight size={20} />
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {doctors.map((doc, i) => (
-                        <Link href={`/doctors/${doc.slug}`} key={i}>
-                            <Card noPadding className="group overflow-hidden hover:border-primary transition-all hover:scale-105 active:scale-95 duration-500">
-                                <div className="relative aspect-[3/4] overflow-hidden">
-                                    <img src={doc.image} alt={doc.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Plus size={20} />
-                                    </div>
-                                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent" />
-                                </div>
-                                <div className="p-6 space-y-1">
-                                    <h5 className="text-lg font-black text-gray-darkest tracking-tight">{doc.name}</h5>
-                                    <p className="text-[9px] font-black text-brand-muted uppercase tracking-widest leading-none">{doc.title}</p>
-                                </div>
-                            </Card>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        </Section>
-    );
+    return <DoctorsPreview />;
 }

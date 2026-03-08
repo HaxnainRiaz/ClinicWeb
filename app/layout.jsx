@@ -1,20 +1,23 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
 export const metadata = {
-  title: "Medify Clinic | Trusted Specialist for Every Medical Need",
-  description: "Build a pixel-perfect, fully responsive, ultra-fast clinic website frontend with Medify.",
+  title: "Medify Clinic | Expert Medical Care for You and Your Family",
+  description:
+    "Book appointments with experienced specialists, access personalized care, and get the support you need — with a modern, patient-first clinic experience.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased bg-white`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased bg-white">
         {children}
       </body>
     </html>

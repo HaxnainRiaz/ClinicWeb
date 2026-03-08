@@ -3,18 +3,28 @@
 import Link from "next/link";
 import { mockImages } from "@/lib/mockImages";
 import { blogPosts } from "@/lib/data";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Newspaper } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function PartnersRow() {
-    // Duplicate array multiple times for smooth infinite scroll
-    const arr = [...mockImages.partners, ...mockImages.partners, ...mockImages.partners, ...mockImages.partners];
+    // We show a simple "trusted by" strip instead of the scrolling partner images
+    // This avoids the unverified logo problem while keeping a visual trust element
+    const certifications = [
+        "HIPAA Compliant",
+        "ISO 9001 Certified",
+        "JCI Accredited Facility",
+        "Board-Certified Physicians",
+        "Patient Privacy Protected",
+        "24/7 Clinical Support",
+    ];
 
     return (
-        <div className="bg-brand-bg py-6 md:py-10 border-y border-white/40 shadow-sm relative z-10 overflow-hidden">
-            <div className="flex animate-slide items-stretch w-max select-none pointer-events-none">
-                {arr.map((src, i) => (
-                    <div key={i} className="flex-shrink-0 w-[180px] h-[120px] md:w-[320px] md:h-[200px] relative border-r-2 border-white/10 group bg-white/50">
-                        <img src={src} alt="Partner Logo" className="w-full h-full object-contain p-8 group-hover:scale-110 transition-all duration-700" />
+        <div className="bg-white py-6 border-y border-gray-lighter overflow-hidden relative">
+            <div className="flex animate-slide items-center w-max select-none gap-0" aria-hidden="true">
+                {[...certifications, ...certifications, ...certifications, ...certifications].map((item, i) => (
+                    <div key={i} className="flex-shrink-0 flex items-center px-8 gap-2.5 border-r border-gray-lighter last:border-r-0">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        <span className="text-[12px] font-semibold text-gray-medium uppercase tracking-widest whitespace-nowrap">{item}</span>
                     </div>
                 ))}
             </div>
@@ -24,63 +34,74 @@ export function PartnersRow() {
 
 export function BlogPreviewGrid() {
     return (
-        <section className="bg-brand-bg py-12 md:py-16">
+        <section className="section-pad bg-gray-lightest">
             <div className="container-custom">
-                <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-20 px-4">
-                    <div className="space-y-6 flex-1">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-soft text-[10px] font-black text-primary uppercase tracking-[0.2em] border border-gray-lighter">
-                            Latest Articles <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+
+                {/* Header */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+                    <div className="space-y-4 max-w-lg">
+                        <div className="section-eyebrow">
+                            <Newspaper size={12} strokeWidth={2.5} />
+                            Clinical Insights
                         </div>
-                        <h2 className="text-5xl lg:text-6xl font-black text-gray-darkest leading-tight tracking-tight max-w-2xl">
-                            Feel free to explore our clinical insights
+                        <h2 className="text-gray-darkest">
+                            Explore our latest clinical insights
                         </h2>
-                    </div>
-                    <div className="flex flex-col gap-6 items-start lg:items-end">
-                        <p className="text-[11px] font-bold text-gray-dark uppercase tracking-widest leading-relaxed max-w-[280px] pt-4 border-l-2 border-primary/20 pl-8">
-                            Join our community and explore professional medical advice for a healthier daily life.
+                        <p className="text-[16px] text-gray-muted leading-[1.7]">
+                            Discover the latest health news and clinical insights from our team of specialists.
                         </p>
-                        <Link href="/blog" className="flex items-center gap-3 text-xs font-black text-gray-darkest uppercase tracking-widest hover:text-primary transition-all group">
-                            Explore all posts <ArrowRight size={18} strokeWidth={3} className="text-primary group-hover:translate-x-1 transition-transform" />
-                        </Link>
                     </div>
+                    <Link href="/blog" className="btn-secondary text-[14px] !px-5 !py-2.5 !min-h-[44px] !rounded-[12px] shrink-0">
+                        All Articles <ArrowRight size={15} strokeWidth={2} />
+                    </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+                {/* Blog Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                     {blogPosts.slice(0, 3).map((post, i) => (
-                        <Link href={`/blog/${post.slug}`} key={i} className="group relative aspect-[4/5] rounded-[40px] overflow-hidden border-4 border-white shadow-soft bg-brand-surface transform transition-transform duration-500 hover:scale-[1.02] hover:-rotate-1 active:scale-95">
-                            <img
-                                src={post.image}
-                                alt={post.title}
-                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-
-                            {/* Author Badge */}
-                            <div className="absolute top-8 left-8">
-                                <span className="px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md text-[9px] font-black text-primary uppercase tracking-widest shadow-float border border-white/50">
-                                    {post.category}
-                                </span>
+                        <Link
+                            href={`/blog/${post.slug}`}
+                            key={i}
+                            className={cn(
+                                "group card !p-0 overflow-hidden hover:shadow-hover hover:-translate-y-1 transition-all duration-300 flex flex-col",
+                                i === 0 ? "md:col-span-2 lg:col-span-1" : ""
+                            )}
+                        >
+                            {/* Image */}
+                            <div className="relative aspect-[16/9] overflow-hidden rounded-t-[18px] bg-gray-lighter">
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                {/* Category badge */}
+                                <div className="absolute top-4 left-4">
+                                    <span className="px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm text-[11px] font-semibold text-primary shadow-sm">
+                                        {post.category}
+                                    </span>
+                                </div>
                             </div>
 
-                            {/* Glass overlay card */}
-                            <div className="absolute bottom-8 left-8 right-8">
-                                <div className="bg-white/90 backdrop-blur-xl rounded-[24px] p-6 shadow-3xl border border-white/50 space-y-4">
-                                    <div className="space-y-3 text-center">
-                                        <h4 className="text-2xl font-black text-gray-darkest tracking-tight leading-snug">
-                                            {post.title}
-                                        </h4>
-                                        <p className="text-[10px] font-black text-gray-dark uppercase tracking-[0.2em] opacity-60">
-                                            {post.date} • {post.readTime}
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center justify-center gap-4 pt-2 border-t border-gray-lighter">
-                                        <span className="text-[11px] font-black text-primary uppercase tracking-widest">
-                                            Read Full Article
-                                        </span>
-                                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-xl shadow-primary/20 transition-transform group-hover:rotate-45">
-                                            <ArrowUpRight size={18} strokeWidth={3} />
-                                        </div>
-                                    </div>
+                            {/* Content */}
+                            <div className="p-5 flex flex-col flex-1 gap-3">
+                                <div className="flex items-center gap-2 text-[11.5px] text-gray-muted">
+                                    <span>{post.date}</span>
+                                    <span className="w-1 h-1 rounded-full bg-gray-lighter" />
+                                    <span>{post.readTime}</span>
+                                </div>
+
+                                <h4 className="text-gray-darkest leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                                    {post.title}
+                                </h4>
+
+                                <p className="text-[13.5px] text-gray-muted leading-[1.65] line-clamp-2 flex-1">
+                                    {post.excerpt}
+                                </p>
+
+                                <div className="flex items-center justify-between pt-3 border-t border-gray-lighter mt-auto">
+                                    <span className="text-[12.5px] font-semibold text-primary flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                                        Read Article <ArrowUpRight size={13} strokeWidth={2.5} />
+                                    </span>
                                 </div>
                             </div>
                         </Link>

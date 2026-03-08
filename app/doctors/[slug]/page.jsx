@@ -4,12 +4,10 @@ import { use } from "react";
 import { doctors } from "@/lib/data";
 import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
-import { PillButton } from "@/components/ui/PillButton";
-import { Section } from "@/components/ui/Section";
 import {
     Star, Clock, GraduationCap, Globe,
     CheckCircle2, ChevronRight, Calendar,
-    ShieldCheck, Activity, Award
+    ShieldCheck, Activity, Award, CheckCircle, Info
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -22,167 +20,177 @@ export default function DoctorDetailPage({ params }) {
     if (!doctor) return notFound();
 
     return (
-        <main className="bg-brand-bg min-h-screen">
+        <main className="bg-brand-bg min-h-screen pt-[76px]">
             <HeaderNav />
 
             {/* ── Doctor Hero Profile ── */}
-            <Section className="relative border-b border-gray-lighter pb-12 lg:pt-20 overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                    <img
-                        src={mockImages.pageHeroes.doctors}
-                        alt=""
-                        className="w-full h-full object-cover opacity-20"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white" />
-                </div>
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <section className="bg-white border-b border-gray-lighter py-10 md:py-16">
+                <div className="container-custom max-w-6xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
-                    {/* Visual Profile */}
-                    <div className="lg:col-span-5 relative group">
-                        <div className="aspect-[4/5] rounded-[40px] overflow-hidden border-[6px] border-white shadow-3xl relative animate-in zoom-in duration-700">
-                            <img
-                                src={doctor.image}
-                                alt={doctor.name}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            {/* Experience Badge */}
-                            <div className="absolute top-8 right-8 bg-primary text-white p-6 rounded-[40px] shadow-xl text-center backdrop-blur-md">
-                                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 leading-none mb-1">Experience</p>
-                                <p className="text-2xl font-black tracking-tight">{doctor.experience}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Content Profile */}
-                    <div className="lg:col-span-7 space-y-10">
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <span className="px-5 py-2 rounded-full bg-brand-bg text-primary text-[10px] font-black uppercase tracking-[0.2em] shadow-sm border border-primary/10">
-                                    {doctor.specialty} Specialist
-                                </span>
-                                <div className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-white border border-gray-lighter shadow-sm">
-                                    <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                                    <span className="text-[10px] font-black text-gray-darkest uppercase tracking-widest">{doctor.rating} Rating</span>
+                        {/* Visual Profile */}
+                        <div className="lg:col-span-4 lg:sticky lg:top-32">
+                            <div className="aspect-[4/5] rounded-[24px] overflow-hidden bg-gray-50 shadow-sm border border-gray-lighter relative">
+                                <img
+                                    src={doctor.image}
+                                    alt={doctor.name}
+                                    className="w-full h-full object-cover object-top"
+                                />
+                                {/* Experience Badge */}
+                                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-[12px] shadow-sm border border-white/50 flex flex-col items-center">
+                                    <span className="text-[10px] font-semibold text-gray-muted uppercase tracking-wider mb-0.5">Experience</span>
+                                    <span className="text-[15px] font-bold text-primary">{doctor.experience}</span>
                                 </div>
                             </div>
-                            <h1 className="text-4xl lg:text-5xl font-black text-gray-darkest tracking-tight leading-[0.95]">{doctor.name}</h1>
-                            <p className="text-xl font-medium text-gray-dark max-w-2xl leading-relaxed">
-                                Dedicated to providing high-quality, compassionate care through advanced medical techniques and patient education.
-                            </p>
                         </div>
 
-                        {/* Fast Stats */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                            {[
-                                { icon: GraduationCap, label: "Education", value: "MD / PhD" },
-                                { icon: Activity, label: "Operations", value: "500+" },
-                                { icon: Globe, label: "Languages", value: doctor.languages.join(', ') },
-                                { icon: Award, label: "Certificates", value: "Board Certified" }
-                            ].map((stat, i) => (
-                                <div key={stat.label} className="bg-white p-6 rounded-[40px] border border-gray-lighter shadow-soft space-y-3">
-                                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                                        <stat.icon size={18} />
-                                    </div>
-                                    <div>
-                                        <p className="text-[8px] font-black text-gray-muted uppercase tracking-widest mb-1">{stat.label}</p>
-                                        <p className="text-xs font-black text-gray-darkest tracking-tight">{stat.value}</p>
+                        {/* Content Profile */}
+                        <div className="lg:col-span-8 flex flex-col h-full space-y-8">
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[11.5px] font-semibold">
+                                        {doctor.specialty} Specialist
+                                    </span>
+                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100/50 text-amber-600">
+                                        <Star size={13} className="fill-amber-400 text-amber-400" />
+                                        <span className="text-[11.5px] font-bold">{doctor.rating}</span>
+                                        <span className="text-[11.5px] font-medium text-amber-600/70">({doctor.reviews} reviews)</span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                                <h1 className="text-gray-darkest mb-3">{doctor.name}</h1>
+                                <p className="text-[18px] font-medium text-gray-medium max-w-2xl leading-[1.6]">
+                                    Dedicated to providing high-quality, compassionate care through advanced medical techniques and patient education.
+                                </p>
+                            </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                            <Link href="/appointments">
-                                <PillButton className="h-14 px-12 text-[12px] tracking-widest font-black uppercase shadow-2xl shadow-primary/30">
-                                    Book Now <ChevronRight size={18} strokeWidth={3} />
-                                </PillButton>
-                            </Link>
-                            <Link href="/contact" className="h-14 px-12 rounded-pill border-2 border-primary text-primary font-black text-[12px] tracking-widest uppercase hover:bg-primary/5 transition-all inline-flex items-center justify-center gap-3">
-                                <ShieldCheck size={18} /> Instant Consultation
-                            </Link>
-                        </div>
-                    </div>
-
-                </div>
-            </Section>
-
-            {/* ── Doctor Core Details ── */}
-            <Section className="py-16">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-
-                    {/* Left: About & Services */}
-                    <div className="lg:col-span-8 space-y-12">
-                        <article className="space-y-8">
-                            <h3 className="text-4xl font-black text-gray-darkest tracking-tight">Biography</h3>
-                            <p className="text-lg font-medium text-gray-dark leading-relaxed max-w-3xl">
-                                {doctor.about}
-                            </p>
-                        </article>
-
-                        <div className="space-y-8">
-                            <h3 className="text-4xl font-black text-gray-darkest tracking-tight">Services Offered</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {doctor.services.map((service, i) => (
-                                    <div key={service} className="p-6 rounded-3xl bg-white border border-gray-lighter shadow-soft flex items-center gap-6 group hover:border-primary transition-all">
-                                        <div className="w-12 h-12 rounded-2xl bg-brand-surface border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                                            <CheckCircle2 size={18} />
+                            {/* Key Stats */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8 border-b border-gray-lighter">
+                                {[
+                                    { icon: GraduationCap, label: "Education", value: "MD / PhD" },
+                                    { icon: Activity, label: "Specialty", value: doctor.specialty },
+                                    { icon: Globe, label: "Languages", value: doctor.languages.join(', ') },
+                                    { icon: Award, label: "Board Status", value: "Certified" }
+                                ].map((stat, i) => (
+                                    <div key={stat.label} className="flex flex-col gap-1.5">
+                                        <div className="flex items-center gap-2 text-gray-muted mb-1">
+                                            <stat.icon size={16} />
+                                            <span className="text-[11px] font-semibold uppercase tracking-wider">{stat.label}</span>
                                         </div>
-                                        <span className="text-[13px] font-black text-gray-darkest uppercase tracking-widest">{service}</span>
+                                        <p className="text-[14px] font-bold text-gray-darkest truncate">{stat.value}</p>
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Right: Availability Sticky Card */}
-                    <div className="lg:col-span-4">
-                        <div className="sticky top-32 space-y-8">
-                            <div className="bg-gray-darkest p-8 rounded-[40px] text-white space-y-8 shadow-3xl">
-                                <div className="space-y-2 text-center">
-                                    <h5 className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">Schedule Preview</h5>
-                                    <h3 className="text-2xl font-black tracking-tight">Next Availability</h3>
+                            {/* Booking CTA Area */}
+                            <div className="bg-brand-bg rounded-[20px] p-6 lg:p-8 flex flex-col sm:flex-row gap-6 items-center justify-between border border-primary/10">
+                                <div className="space-y-1 text-center sm:text-left">
+                                    <h4 className="text-[18px] text-gray-darkest">Ready for a consultation?</h4>
+                                    <p className="text-[13.5px] text-gray-muted">Book online or contact our team directly.</p>
                                 </div>
-
-                                <div className="space-y-6">
-                                    <div className="bg-white/10 p-5 rounded-[24px] border border-white/10 flex items-center gap-6">
-                                        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
-                                            <Calendar size={20} className="text-white" />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/50 mb-1">Next Day</span>
-                                            <span className="font-black text-sm tracking-tight">{doctor.availability[0]}</span>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white/10 p-5 rounded-[24px] border border-white/10 flex items-center gap-6">
-                                        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
-                                            <Clock size={20} className="text-white" />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/50 mb-1">Working Hours</span>
-                                            <span className="font-black text-sm tracking-tight">{doctor.availability[1]}</span>
-                                        </div>
-                                    </div>
+                                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                                    <Link href={`/appointments?doctor=${doctor.slug}`} className="btn-primary shrink-0 justify-center">
+                                        Book Appointment <ChevronRight size={16} strokeWidth={2.5} />
+                                    </Link>
                                 </div>
-
-                                <PillButton className="w-full h-14 bg-white text-primary hover:bg-brand-surface text-xs font-black uppercase tracking-widest">
-                                    Reserve this doctor
-                                </PillButton>
                             </div>
+                        </div>
 
-                            {/* Trust Pill */}
-                            <div className="p-8 rounded-[40px] bg-white border-2 border-primary/10 flex items-center gap-6 shadow-soft">
-                                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white shrink-0">
-                                    <CheckCircle2 size={14} />
-                                </div>
-                                <p className="text-[10px] font-black text-gray-darkest uppercase tracking-widest leading-relaxed">
-                                    Verified specialist with board certifications and 100+ positive patient reviews.
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Doctor Details & Info ── */}
+            <section className="section-pad">
+                <div className="container-custom max-w-6xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+
+                        {/* Left Column: Bio & Services */}
+                        <div className="lg:col-span-7 space-y-12">
+                            {/* Bio */}
+                            <div className="space-y-4">
+                                <h3 className="text-gray-darkest">Clinical Biography</h3>
+                                <p className="text-[16px] text-gray-muted leading-[1.75]">
+                                    {doctor.about}
                                 </p>
                             </div>
+
+                            {/* Services */}
+                            <div className="space-y-6">
+                                <h3 className="text-gray-darkest">Specialized Services</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {doctor.services.map((service, i) => (
+                                        <div key={service} className="p-4 rounded-[16px] bg-white border border-gray-lighter shadow-sm flex items-start gap-4">
+                                            <div className="mt-0.5 text-primary shrink-0">
+                                                <CheckCircle2 size={20} strokeWidth={2.5} />
+                                            </div>
+                                            <span className="text-[14px] font-medium text-gray-darkest leading-snug">{service}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Insurance & Hours */}
+                        <div className="lg:col-span-5 space-y-8">
+
+                            {/* Insurance Panel */}
+                            <div className="card space-y-6">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                                        <ShieldCheck size={20} strokeWidth={2} />
+                                    </div>
+                                    <h4 className="text-gray-darkest m-0">Accepted Insurance</h4>
+                                </div>
+
+                                {doctor.insurances && doctor.insurances.length > 0 ? (
+                                    <div className="flex flex-wrap gap-2">
+                                        {doctor.insurances.map(ins => (
+                                            <span key={ins} className="px-3 py-1.5 bg-gray-lightest border border-gray-lighter rounded-[8px] text-[13px] font-medium text-gray-darkest flex items-center gap-1.5">
+                                                <CheckCircle size={14} className="text-green-500" /> {ins}
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-[14px] text-gray-muted">No insurance data available.</p>
+                                )}
+
+                                {/* Out of network notice */}
+                                <div className="mt-4 p-4 rounded-[12px] bg-amber-50 border border-amber-200 flex items-start gap-3">
+                                    <Info size={18} className="text-amber-600 shrink-0 mt-0.5" />
+                                    <div className="space-y-1">
+                                        <p className="text-[13px] font-semibold text-amber-900 leading-tight">Out of Network?</p>
+                                        <p className="text-[12px] text-amber-700 leading-relaxed">
+                                            If your plan is not listed, our team will coordinate with you to verify your direct-pay or out-of-network options before confirming the appointment.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Availability Panel */}
+                            <div className="card space-y-6">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 rounded-full bg-brand-surface flex items-center justify-center text-gray-darkest">
+                                        <Clock size={20} strokeWidth={2} />
+                                    </div>
+                                    <h4 className="text-gray-darkest m-0">Standard Clinical Hours</h4>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center py-3 border-b border-gray-lighter/60">
+                                        <span className="text-[14px] font-medium text-gray-medium flex items-center gap-2"><Calendar size={16} /> Days</span>
+                                        <span className="text-[14px] font-semibold text-gray-darkest">{doctor.availability[0]}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-3">
+                                        <span className="text-[14px] font-medium text-gray-medium flex items-center gap-2"><Clock size={16} /> Hours</span>
+                                        <span className="text-[14px] font-semibold text-gray-darkest">{doctor.availability[1]}</span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-
                 </div>
-            </Section>
+            </section>
 
             <Footer />
         </main>
